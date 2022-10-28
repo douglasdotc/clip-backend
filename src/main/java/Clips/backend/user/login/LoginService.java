@@ -1,4 +1,4 @@
-package Clips.backend.login;
+package Clips.backend.user.login;
 
 import Clips.backend.user.User;
 import Clips.backend.user.UserService;

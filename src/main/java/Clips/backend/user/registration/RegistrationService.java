@@ -1,4 +1,4 @@
-package Clips.backend.registration;
+package Clips.backend.user.registration;
 
 import Clips.backend.user.User;
 import Clips.backend.user.UserRole;

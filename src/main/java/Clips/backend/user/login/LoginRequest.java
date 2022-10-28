@@ -1,4 +1,4 @@
-package Clips.backend.login;
+package Clips.backend.user.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

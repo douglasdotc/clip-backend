@@ -1,4 +1,4 @@
-package Clips.backend.login;
+package Clips.backend.user.registration;
 
 import Clips.backend.response.Response;
 import lombok.AllArgsConstructor;
@@ -12,21 +12,22 @@ import static java.time.LocalDateTime.now;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
 
-// RESTful API layer to login a user:
-// e.g.: http://localhost:8080/api/v1/login
+// RESTful API layer to register a user.
+// e.g.: http://localhost:8080/api/v1/registration
 @RestController
-@RequestMapping(path = "api/v1/login")
+@RequestMapping(path = "api/v1/user/registration")
 @AllArgsConstructor
-public class LoginController {
-    private LoginService loginService;
+public class RegistrationController {
+    private RegistrationService registrationService;
 
     @PostMapping
-    public ResponseEntity<Response> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Response> register(@RequestBody RegistrationRequest request) {
+        // Get a json from frontend and register the user using the registration service
         return ResponseEntity.ok(
             Response.builder()
                 .timeStamp(now())
-                .data(of("response", loginService.login(request)))
-                .message("[LoginController|login] Login request sent.")
+                .data(of("response", registrationService.register(request)))
+                .message("[RegistrationController|register] Registration request sent.")
                 .httpStatus(CREATED)
                 .statusCode(CREATED.value())
                 .build()
