@@ -1,4 +1,4 @@
-package Clips.backend.clip;
+package Clips.backend.clip.db;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

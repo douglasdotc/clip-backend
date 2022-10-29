@@ -1,4 +1,4 @@
-package Clips.backend.clip;
+package Clips.backend.clip.db;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

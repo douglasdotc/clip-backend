@@ -1,4 +1,4 @@
-package Clips.backend.clip;
+package Clips.backend.clip.db;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
