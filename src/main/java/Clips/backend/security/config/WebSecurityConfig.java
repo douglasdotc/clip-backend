@@ -25,8 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         // TODO: Authorize request to different API: https://www.baeldung.com/spring-security-configuring-urls
-        // permit all user to registration and login API.
-        // permit USER and ADMIN only to clips API
+        // permit all user to registration and login APIs.
+        // permit USER and ADMIN only to clips (db and storage) APIs
 
 //            .authorizeRequests()
 //            .antMatchers("/api/v*/registration/**")
