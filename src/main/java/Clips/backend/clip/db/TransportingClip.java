@@ -10,19 +10,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class NewClipRequest {
+public class TransportingClip {
     @JsonProperty("uid")
     private final String uid;
-    @JsonProperty("display_name")
+    @JsonProperty("displayName")
     private final String displayName;
     @JsonProperty("title")
     private final String title;
-    @JsonProperty("file_name")
+    @JsonProperty("fileName")
     private final String fileName;
     @JsonProperty("url")
     private final String url;
-    @JsonProperty("screenshot_url")
+    @JsonProperty("screenshotURL")
     private final String screenshotUrl;
-    @JsonProperty("screenshot_file_name")
+    @JsonProperty("screenshotFileName")
     private final String screenshotFileName;
 }

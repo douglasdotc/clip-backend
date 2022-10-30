@@ -47,7 +47,7 @@ public class ClipService {
         return clip.get();
     }
 
-    public Clip createClip(NewClipRequest newClip) {
+    public Clip createClip(TransportingClip newClip) {
         log.info("[ClipService|createClip] Saving new clip.");
         // We allow user to create clips with same title and content
         Clip clip = new Clip(

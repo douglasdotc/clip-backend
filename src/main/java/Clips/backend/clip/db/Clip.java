@@ -23,28 +23,28 @@ public class Clip {
     @JsonProperty("id")
     private Long id;
 
-    @JsonProperty("doc_id")
+    @JsonProperty("docID")
     private String docId;
 
     @JsonProperty("uid")
     private String uid;
 
-    @JsonProperty("display_name")
+    @JsonProperty("displayName")
     private String displayName;
 
     @JsonProperty("title")
     private String title;
 
-    @JsonProperty("file_name")
+    @JsonProperty("fileName")
     private String fileName;
 
     @JsonProperty("url")
     private String url;
 
-    @JsonProperty("screenshot_url")
+    @JsonProperty("screenshotURL")
     private String screenshotUrl;
 
-    @JsonProperty("screenshot_file_name")
+    @JsonProperty("screenshotFileName")
     private String screenshotFileName;
 
     @JsonProperty("timestamp")

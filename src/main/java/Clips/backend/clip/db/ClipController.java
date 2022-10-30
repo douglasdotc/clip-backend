@@ -51,7 +51,7 @@ public class ClipController {
     }
 
     @PostMapping("/createClip")
-    public ResponseEntity<Response> createClip(@RequestBody NewClipRequest newClip) {
+    public ResponseEntity<Response> createClip(@RequestBody TransportingClip newClip) {
         return ResponseEntity.ok(
             responseService.ResponseBuilder(
                 of("clip", clipService.createClip(newClip)),
