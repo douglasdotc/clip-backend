@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class FileSystemStorageService {
     private final Path rootLocation;
+
+    // Regex that extract an extension:
     private final Pattern extPattern = Pattern.compile("\\.[^/.]+$");
 
     @Autowired // Dependency injection
@@ -42,18 +44,23 @@ public class FileSystemStorageService {
                 );
             }
 
+            // Init destination path as root path:
             Path destinationPath = this.rootLocation;
 
             // Create directories:
             if (!directoryPath.isEmpty()) {
+                // Update destination path with given directories and create the directory if not exist:
                 destinationPath = Paths.get(this.rootLocation.toString() + "/" + directoryPath);
-                try {
-                    Files.createDirectories(destinationPath);
 
-                } catch (IOException e) {
-                    throw new StorageException(
-                        "[FileSystemStorageService|store] Could not initialize storage", e
-                    );
+                if (!Files.isDirectory(destinationPath)) {
+                    try {
+                        Files.createDirectories(destinationPath);
+
+                    } catch (IOException e) {
+                        throw new StorageException(
+                            "[FileSystemStorageService|store] Could not initialize storage", e
+                        );
+                    }
                 }
             }
 
@@ -93,14 +100,17 @@ public class FileSystemStorageService {
     }
 
     public Path load(String directories, String fileName) {
+        // Get file path:
         return rootLocation.resolve(directories + "/" + fileName);
     }
 
     public Resource loadAsResource(String directories, String fileName) throws StorageFileNotFoundException {
         try {
+            // Load file path and create an url resource:
             Path filePath = load(directories, fileName);
             Resource resource = new UrlResource(filePath.toUri());
 
+            // Check if the file is readable, only return if yes:
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
@@ -117,8 +127,10 @@ public class FileSystemStorageService {
 
     public boolean delete(String directories, String fileNameWithExt) throws StorageFileNotFoundException {
         try {
+            // Load the file path and delete the file:
             Path filePath = load(directories, fileNameWithExt);
             Files.delete(filePath);
+
             return true;
 
         } catch (IOException e) {
