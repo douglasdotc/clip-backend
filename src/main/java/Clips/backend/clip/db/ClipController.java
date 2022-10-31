@@ -39,8 +39,8 @@ public class ClipController {
         );
     }
 
-    @GetMapping("/getClipByDocID/{docID}")
-    public ResponseEntity<Response> getClipByDocID(@PathVariable("docID") String docID) {
+    @GetMapping("/getClipByDocID")
+    public ResponseEntity<Response> getClipByDocID(@RequestParam(required = true) String docID) {
         return ResponseEntity.ok(
             responseService.ResponseBuilder(
                 of("clip", clipService.getClipByDocID(docID)),
