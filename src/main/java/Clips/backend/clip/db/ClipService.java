@@ -23,6 +23,15 @@ public class ClipService {
     // Interface that use to access database:
     private final ClipRepository clipRepository;
 
+    public List<Clip> getClips(Integer startAfter, Integer limit) {
+        log.info("[ClipService|getClips] Fetching {} clips", limit);
+        Optional<List<Clip>> clips = clipRepository.findClipsOrderByTimestampDESC(
+            startAfter == null ? 0 : startAfter,
+            limit
+        );
+        return clips.isEmpty() ? of() : clips.get();
+    }
+
     public List<Clip> getAllClipsForUser(String uid, String sort) {
         log.info("[ClipService|getAllClipsForUser] Fetching user's clips with uid {}", uid);
         Optional<List<Clip>> clips = clipRepository.findClipsByUid(

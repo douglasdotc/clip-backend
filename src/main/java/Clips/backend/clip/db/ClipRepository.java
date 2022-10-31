@@ -12,6 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface ClipRepository extends JpaRepository<Clip, Long> {
+    @Query(value="SELECT * FROM clip ORDER BY timestamp DESC LIMIT :startAfter, :limit", nativeQuery = true)
+    Optional<List<Clip>>findClipsOrderByTimestampDESC(@Param("startAfter") Integer startAfter, @Param("limit") Integer limit);
+
     @Query("SELECT c FROM Clip c WHERE c.uid = :uid")
     Optional<List<Clip>> findClipsByUid(@Param("uid") String uid, Sort sort);
 

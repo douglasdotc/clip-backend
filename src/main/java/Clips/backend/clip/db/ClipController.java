@@ -25,6 +25,20 @@ public class ClipController {
     private ClipService clipService;
     private ResponseService responseService;
 
+    @GetMapping("/getClips")
+    public ResponseEntity<Response> getClips(
+        @RequestParam(required = false) Integer startAfter,
+        @RequestParam(required = true) Integer limit
+    ) {
+        return ResponseEntity.ok(
+            responseService.ResponseBuilder(
+                of("clips", clipService.getClips(startAfter, limit)),
+                "[ClipController|getClips] Clips retrieved.",
+                OK
+            )
+        );
+    }
+
     @GetMapping("/getAllClipsForUser")
     public ResponseEntity<Response> getAllClipsForUser(
         @RequestParam(required = true) String uid,
@@ -38,7 +52,7 @@ public class ClipController {
             )
         );
     }
-
+    
     @GetMapping("/getClipByDocID")
     public ResponseEntity<Response> getClipByDocID(@RequestParam(required = true) String docID) {
         return ResponseEntity.ok(
