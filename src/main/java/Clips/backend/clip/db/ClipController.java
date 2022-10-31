@@ -86,8 +86,8 @@ public class ClipController {
         );
     }
 
-    @DeleteMapping(path = "/deleteClip/{docID}")
-    public ResponseEntity<Response> deleteClip(@PathVariable("docID") String docID) {
+    @DeleteMapping(path = "/deleteClip")
+    public ResponseEntity<Response> deleteClip(@RequestParam(required = true) String docID) {
         return ResponseEntity.ok(
             responseService.ResponseBuilder(
                 of("isClipDeleted", clipService.deleteClip(docID)),
