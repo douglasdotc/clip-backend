@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+
+import java.nio.file.Path;
 
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -35,19 +36,42 @@ public class FileUploadController {
         @RequestParam("filePath") String filePath,
         @RequestParam("file") MultipartFile file
     ) {
-        // Get directory Path:
-        String directoryPath = filePath.split("/")[0];
+        // Get directory Path (0) and fileName (1):
+        String[] splits = filePath.split("/");
 
         // Store the file:
-        String fileName = fileSystemStorageService.store(directoryPath, file);
+        boolean isSaved = fileSystemStorageService.store(splits[0], splits[1], file);
 
-        // Try to serve and retrieve the URI to the file:
-        String storagePath = MvcUriComponentsBuilder
+        return ResponseEntity.ok(
+            responseService.ResponseBuilder(
+                of("isSaved", isSaved),
+                "[FileUploadController|upload] Upload request sent.",
+                CREATED
+            )
+        );
+    }
+
+    @GetMapping("/getDownloadURL")
+    public ResponseEntity<Response> getDownloadURL(
+        @RequestParam(required = true) String filePath
+    ) {
+        // Check if the given path is valid:
+        boolean isValid = fileSystemStorageService.isValidFilePath(filePath);
+        if (!isValid) {
+            return ResponseEntity.ok(
+                responseService.ResponseBuilder(
+                    of(),
+                    "[FileUploadController|getDownloadURL] Download URL not found.",
+                    OK
+                )
+            );
+        }
+
+        String downloadURL = MvcUriComponentsBuilder
             .fromMethodName(
                 FileUploadController.class,
                 "getFile",
-                directoryPath,
-                fileName
+                filePath
             )
             .build()
             .toUri()
@@ -55,20 +79,19 @@ public class FileUploadController {
 
         return ResponseEntity.ok(
             responseService.ResponseBuilder(
-                of("storagePath", storagePath),
-                "[FileUploadController|upload] Upload request sent.",
-                CREATED
+                of("downloadURL", downloadURL),
+                "[FileUploadController|getDownloadURL] Download URL retrieved.",
+                OK
             )
         );
     }
 
-    @GetMapping("/getFile/{directories}/{filename:.+}")
+    @GetMapping("/getFile")
     @ResponseBody
     public ResponseEntity<Resource> getFile(
-        @PathVariable String directories,
-        @PathVariable String filename
+        @RequestParam(required = true) String filePath
     ) {
-        Resource file = fileSystemStorageService.loadAsResource(directories, filename);
+        Resource file = fileSystemStorageService.loadAsResource(filePath);
         return ResponseEntity.ok()
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
@@ -82,8 +105,7 @@ public class FileUploadController {
     public ResponseEntity<Response> delete(
         @RequestParam("filePath") String filePath
     ) {
-        String[] filePathSplit = filePath.split("/"); // directories and file name
-        boolean isDeleted = fileSystemStorageService.delete(filePathSplit[0], filePathSplit[1]);
+        boolean isDeleted = fileSystemStorageService.delete(filePath);
         return ResponseEntity.ok(
             responseService.ResponseBuilder(
                 of("isDeleted", isDeleted),

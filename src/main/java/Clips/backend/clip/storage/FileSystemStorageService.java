@@ -18,24 +18,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
 public class FileSystemStorageService {
     private final Path rootLocation;
 
-    // Regex that extract an extension:
-    private final Pattern extPattern = Pattern.compile("\\.[^/.]+$");
-
     @Autowired // Dependency injection
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
 
-    public String store(String directoryPath, MultipartFile file) throws StorageException {
+    public boolean store(String directoryPath, String fileName, MultipartFile file) throws StorageException {
         try {
             // directoryPath can be null. Check if the file is empty:
             if (file.isEmpty()) {
@@ -64,16 +58,9 @@ public class FileSystemStorageService {
                 }
             }
 
-            // Get file name extension, we have restricted the user to enter a filename in frontend:
-            Matcher extMatcher = extPattern.matcher(file.getOriginalFilename());
-            String ext = extMatcher.find() ? extMatcher.group() : null;
-
-            // Use UUID to generate a name for the file:
-            String uniqueFileName = UUID.randomUUID() + ext;
-
             // Get destination path with the generated UUID:
             Path destinationFile = destinationPath.resolve(
-                Paths.get(uniqueFileName)
+                Paths.get(fileName)
             ).normalize().toAbsolutePath();
 
             // Security check destination folder
@@ -91,23 +78,41 @@ public class FileSystemStorageService {
                 );
             }
 
-            // Return the filename:
-            return uniqueFileName;
+            return true;
 
         } catch (IOException e) {
             throw new StorageException("[FileSystemStorageService|store] Failed to store file.", e);
         }
     }
 
-    public Path load(String directories, String fileName) {
+    public Path load(String filePath) {
         // Get file path:
-        return rootLocation.resolve(directories + "/" + fileName);
+        return rootLocation.resolve(filePath);
     }
 
-    public Resource loadAsResource(String directories, String fileName) throws StorageFileNotFoundException {
+    public boolean isValidFilePath(String receivedFilePath) {
         try {
             // Load file path and create an url resource:
-            Path filePath = load(directories, fileName);
+            Path filePath = load(receivedFilePath);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            // Check if the file is readable, only return true if yes:
+            if (resource.exists() || resource.isReadable()) {
+                return true;
+            }
+            return false;
+
+        } catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException(
+                "[FileSystemStorageService|isValidFilePath] Could not read file: " + receivedFilePath, e
+            );
+        }
+    }
+
+    public Resource loadAsResource(String receivedFilePath) throws StorageFileNotFoundException {
+        try {
+            // Load file path and create an url resource:
+            Path filePath = load(receivedFilePath);
             Resource resource = new UrlResource(filePath.toUri());
 
             // Check if the file is readable, only return if yes:
@@ -115,27 +120,27 @@ public class FileSystemStorageService {
                 return resource;
             } else {
                 throw new StorageFileNotFoundException(
-                    "[FileSystemStorageService|loadAsResource] Could not read file: " + fileName
+                    "[FileSystemStorageService|loadAsResource] Could not read file: " + receivedFilePath
                 );
             }
         } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException(
-                "[FileSystemStorageService|loadAsResource] Could not read file: " + fileName, e
+                "[FileSystemStorageService|loadAsResource] Could not read file: " + receivedFilePath, e
             );
         }
     }
 
-    public boolean delete(String directories, String fileNameWithExt) throws StorageFileNotFoundException {
+    public boolean delete(String receivedFilePath) throws StorageFileNotFoundException {
         try {
             // Load the file path and delete the file:
-            Path filePath = load(directories, fileNameWithExt);
+            Path filePath = load(receivedFilePath);
             Files.delete(filePath);
 
             return true;
 
         } catch (IOException e) {
             throw new StorageFileNotFoundException(
-                "[FileSystemStorageService|delete] Could not read file: " + fileNameWithExt
+                "[FileSystemStorageService|delete] Could not read file: " + receivedFilePath
             );
         }
     }
