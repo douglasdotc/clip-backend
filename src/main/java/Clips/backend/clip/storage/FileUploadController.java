@@ -1,8 +1,8 @@
 package Clips.backend.clip.storage;
 
 import Clips.backend.clip.storage.exceptions.StorageFileNotFoundException;
-import Clips.backend.response.Response;
-import Clips.backend.response.ResponseService;
+import Clips.backend.responses.Response;
+import Clips.backend.responses.ResponseService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-
-import java.nio.file.Path;
 
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;

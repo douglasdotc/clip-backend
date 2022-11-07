@@ -1,4 +1,4 @@
-package Clips.backend.response;
+package Clips.backend.responses;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

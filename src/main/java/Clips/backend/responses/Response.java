@@ -1,4 +1,4 @@
-package Clips.backend.response;
+package Clips.backend.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
