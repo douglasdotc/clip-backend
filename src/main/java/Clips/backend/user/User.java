@@ -1,30 +1,31 @@
 package Clips.backend.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Collection;
-import java.util.Collections;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 // Model class for users, implemented with Spring Boot security.
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @Entity // the properties will be in database
-public class User implements UserDetails {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
@@ -48,15 +49,11 @@ public class User implements UserDetails {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
-    @JsonProperty("user_role")
-    private UserRole userRole;
-
-    @JsonProperty("locked")
-    private Boolean locked = false;
-
-    @JsonProperty("enabled")
-    private Boolean enabled = true;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+private Set<UserRole> roles = new HashSet<>();
 
     // For Login:
     public User(
@@ -73,50 +70,12 @@ public class User implements UserDetails {
         String email,
         String password,
         Integer age,
-        String phoneNumber,
-        UserRole userRole
+        String phoneNumber
     ) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.age = age;
         this.phoneNumber = phoneNumber;
-        this.userRole = userRole;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
-        return Collections.singletonList(authority);
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !locked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
     }
 }

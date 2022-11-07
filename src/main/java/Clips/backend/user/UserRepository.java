@@ -8,7 +8,8 @@ import java.util.Optional;
 
 // Repository that interact with the user database using JpaRepository.
 @Repository // Data access object
-@Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }
