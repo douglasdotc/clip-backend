@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UserInfoResponse {
+    private String uid;
     private String name;
     private String email;
     private List<String> roles;
