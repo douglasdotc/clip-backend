@@ -4,6 +4,7 @@ import Clips.backend.responses.Response;
 import Clips.backend.responses.ResponseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = "api/v1/clip/db")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @AllArgsConstructor
 public class ClipController {
     private ClipService clipService;

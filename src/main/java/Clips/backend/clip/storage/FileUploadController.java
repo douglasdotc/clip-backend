@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = "api/v1/clip/storage")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @AllArgsConstructor
 public class FileUploadController {
     private FileSystemStorageService fileSystemStorageService;

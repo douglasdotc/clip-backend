@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.OK;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/v1/auth")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 public class AuthController {
     @Autowired
     AuthService authService;
