@@ -55,6 +55,7 @@ public class WebSecurityConfig {
             // Permit all request for the following paths:
             .authorizeRequests().antMatchers("/api/v*/auth/**").permitAll()
             .antMatchers("/api/v*/clip/db/getClips/**").permitAll()
+            .antMatchers("/api/v*/clip/db/getClipByDocID/**").permitAll()
             .antMatchers("/api/v*/clip/storage/getFile/**").permitAll()
             // All others need authentication:
             .anyRequest().authenticated();
