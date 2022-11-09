@@ -46,15 +46,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
         boolean isRegistered = authService.register(registrationRequest);
-        if (isRegistered) {
-            return ResponseEntity.ok(
-                new MessageResponse("[AuthController|registerUser] User registered successfully!")
-            );
-        } else {
-            return ResponseEntity.badRequest().body(
-                new MessageResponse("[AuthController|registerUser] Error: Email is already in use!")
-            );
-        }
+        return ResponseEntity.ok(
+            responseService.ResponseBuilder(
+                of("isRegistered", isRegistered),
+                "[AuthController|registerUser] Registration request sent.",
+                OK
+            )
+        );
     }
 
     @PostMapping("/login")
